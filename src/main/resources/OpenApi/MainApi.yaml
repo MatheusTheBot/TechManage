@@ -1,0 +1,143 @@
+openapi: 3.0.3
+info:
+  title: Main Api
+  version: 1.0.0
+tags:
+  - name: User
+    description: User related endpoints
+servers:
+  - url: http://localhost:8080
+paths:
+  /api/users:
+    get:
+      summary: Get all users
+      operationId: getUsers
+      tags:
+      - User
+      responses:
+        '200':
+          description: List of all users
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+        '204':
+          description: No users on the database
+        '400':
+          description: An error occurred during the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+    post:
+      summary: Adds a new User into the database
+      operationId: addUser
+      tags:
+        - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserModel'
+      responses:
+        '201':
+          description: Successfully added a new User
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+        '400':
+          description: An error occurred during the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+  /api/users/{id}:
+    get:
+      summary: Get a specific user
+      operationId: getUser
+      tags:
+        - User
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: The user requested
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+        '204':
+          description: No user on the database with this ID
+        '400':
+          description: An error occurred during the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+    put:
+      summary: Updates a User data
+      operationId: updateUser
+      tags:
+        - User
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserModel'
+      responses:
+        '201':
+          description: Successfully updated a User
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+        '400':
+          description: An error occurred during the request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+    delete:
+      summary: Deletes a User
+      operationId: deleteUser
+      tags:
+        - User
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successfully deleted a User
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+        '404':
+          description: User was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseModel'
+components:
+  schemas:
+    ResponseModel:
+      $ref: './Models/ResponseModel.yaml'
+    UserModel:
+      $ref: './Models/UserModel.yaml'
