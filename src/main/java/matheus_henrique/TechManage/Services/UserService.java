@@ -41,4 +41,23 @@ public class UserService {
     public boolean emailAlreadyExists(String email){
         return repository.findByEmail(email) == null ? false : true;
     }
+    public boolean phoneAlreadyExists(String phone){
+        return repository.findByPhone(phone) == null ? false : true;
+    }
+    public boolean emailAlreadyExists(String email, long Id){
+        var response = repository.findByEmail(email);
+        if(response == null)
+            return false;
+        else if (response.getId() == Id)
+            return false;
+        else return true;
+    }
+    public boolean phoneAlreadyExists(String phone, long Id){
+        var response = repository.findByPhone(phone);
+        if(response == null)
+            return false;
+        else if (response.getId() == Id)
+            return false;
+        else return true;
+    }
 }

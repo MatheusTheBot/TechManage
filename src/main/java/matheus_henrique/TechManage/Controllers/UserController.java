@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/users")
@@ -23,18 +22,29 @@ public class UserController implements ApiApi {
     @PostMapping()
     @Override
     public ResponseEntity<ResponseModel> addUser(UserModel userModel) {
-
         if (service.emailAlreadyExists(userModel.getEmail()))
             return ResponseEntity
                     .badRequest()
                     .body(new ResponseModel()
-                            .addErrorsItem("Email já existe no banco de dados")
+                            .addErrorsItem("Email já existe no banco de dados!")
+                    );
+        if (service.phoneAlreadyExists(userModel.getPhone()))
+            return ResponseEntity
+                    .badRequest()
+                    .body(new ResponseModel()
+                            .addErrorsItem("Telefone já existe no banco de dados!")
                     );
 
         var newUser = User.builder()
                 .fullName(userModel.getFullName())
                 .email(userModel.getEmail())
-                .phone(userModel.getPhone())
+                .phone(userModel.getPhone()
+                        .replace(" ", "")
+                        .replace("-", "")
+                        .replace("(", "")
+                        .replace(")", "")
+                        .replace(":", "")
+                )
                 .birthDate(userModel.getBirthDate())
                 .userType(EUserType.valueOf(userModel.getUserType().getValue()))
                 .build();
@@ -58,7 +68,7 @@ public class UserController implements ApiApi {
             return ResponseEntity
                     .badRequest()
                     .body(new ResponseModel()
-                            .addErrorsItem("Um Erro ocorreu ao processar a request" + e.getMessage())
+                            .addErrorsItem("Um Erro ocorreu ao processar a request: " + e.getMessage())
                     );
         }
     }
@@ -121,6 +131,7 @@ public class UserController implements ApiApi {
     @PutMapping("/{id}")
     @Override
     public ResponseEntity<ResponseModel> updateUser(Long id, UserModel userModel) {
+
         User existingUser = service.getUserById(id);
 
         if (existingUser == null) {
@@ -131,20 +142,31 @@ public class UserController implements ApiApi {
                     );
         }
 
-        if (!Objects.equals(userModel.getEmail(), existingUser.getEmail()))
-            if (service.emailAlreadyExists(userModel.getEmail()))
-                return ResponseEntity
-                        .badRequest()
-                        .body(new ResponseModel()
-                                .addErrorsItem("Já existe um usuário com este email!")
-                        );
+        if (service.emailAlreadyExists(userModel.getEmail(), id))
+            return ResponseEntity
+                    .badRequest()
+                    .body(new ResponseModel()
+                            .addErrorsItem("Email já existe no banco de dados!")
+                    );
+        if (service.phoneAlreadyExists(userModel.getPhone(), id))
+            return ResponseEntity
+                    .badRequest()
+                    .body(new ResponseModel()
+                            .addErrorsItem("Telefone já existe no banco de dados!")
+                    );
 
         User userToUpdate = User
                 .builder()
                 .id(id)
                 .fullName(userModel.getFullName())
                 .email(userModel.getEmail())
-                .phone(userModel.getPhone())
+                .phone(userModel.getPhone()
+                        .replace(" ", "")
+                        .replace("-", "")
+                        .replace("(", "")
+                        .replace(")", "")
+                        .replace(":", "")
+                )
                 .birthDate(userModel.getBirthDate())
                 .userType(EUserType.valueOf(userModel.getUserType().getValue()))
                 .build();
@@ -160,16 +182,15 @@ public class UserController implements ApiApi {
                                 .addErrorsItem("Usuário não foi ajustado!!")
                         );
             else return ResponseEntity
-                        .ok(new ResponseModel()
-                                .addDataItem(response)
-                        );
+                    .ok(new ResponseModel()
+                            .addDataItem(response)
+                    );
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity
                     .badRequest()
                     .body(new ResponseModel()
-                            .addErrorsItem("Um Erro ocorreu ao processar a request" + e.getMessage())
+                            .addErrorsItem("Um Erro ocorreu ao processar a request: " + e.getMessage())
                     );
         }
     }
