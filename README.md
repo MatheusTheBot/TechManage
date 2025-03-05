@@ -9,7 +9,7 @@ TechManage is a Spring Boot application that provides a REST API for managing us
 - Spring Data JPA
 - H2 Database
 - Lombok
-- OpenAPI 3.0 (Swagger UI)
+- OpenAPI 3.0 (Swagger)
 - Maven
 
 ## Features
@@ -73,7 +73,6 @@ The application will start on port 8080 by default.
 Once the application is running, you can access:
 
 - API endpoints at http://localhost:8080/api/users
-- Swagger UI at http://localhost:8080/swagger-ui.html
 - H2 Database Console at http://localhost:8080/h2-console
 
 ### H2 Console Configuration
