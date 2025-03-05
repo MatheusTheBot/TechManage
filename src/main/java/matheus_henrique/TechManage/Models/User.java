@@ -28,10 +28,10 @@ public class User {
     @Column(unique = true)
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "Phone should not be blank")
     private String phone;
 
-    @NotNull
+    @NotNull(message = "BirthDate should not be null")
     private LocalDate birthDate;
 
     @NotNull(message = "User type is required")
